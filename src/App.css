@@ -1,0 +1,199 @@
+/* App Layout */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+@media (min-width: 1024px) {
+  .app-layout {
+    flex-direction: row;
+  }
+}
+
+.hero-section {
+  flex: 1;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, #312e81 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-8);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background: radial-gradient(circle at top right, rgba(255,255,255,0.1), transparent 50%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 400px;
+}
+
+.hero-content h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: var(--spacing-4);
+  letter-spacing: -1px;
+}
+
+.hero-content p {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+}
+
+.calendar-section {
+  flex: 2.5;
+  padding: var(--spacing-8) var(--spacing-4);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: var(--bg-color);
+  overflow-y: auto;
+}
+
+/* Sidebar and Calendar container */
+.calendar-layout-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  width: 100%;
+  max-width: 1000px;
+}
+
+@media (min-width: 768px) {
+  .calendar-layout-container {
+    flex-direction: row;
+    align-items: stretch;
+  }
+}
+
+.calendar-wrapper {
+  flex: 1.8;
+}
+
+.calendar-sidebar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+/* Range Insights Placeholder */
+.range-insights-placeholder {
+  display: none;
+}
+
+/* Range Insights */
+.range-insights {
+  background: var(--bg-panel);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  padding: var(--spacing-4) var(--spacing-6);
+  animation: slideIn var(--transition-normal);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.range-insights h3 {
+  margin: 0 0 var(--spacing-4) 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.insight-stats {
+  display: flex;
+  gap: var(--spacing-4);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-color);
+  padding: var(--spacing-3);
+  border-radius: var(--radius-lg);
+  flex: 1;
+  align-items: center;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* Notes Panel */
+.notes-panel {
+  background: var(--bg-panel);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  padding: var(--spacing-6);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 250px;
+}
+
+.notes-panel.empty {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--text-tertiary);
+  border: 2px dashed var(--border-color);
+  box-shadow: none;
+  background: transparent;
+}
+
+.notes-panel.empty p {
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-2);
+  font-weight: 500;
+}
+
+.empty-subtext {
+  font-size: 0.85rem;
+}
+
+.notes-header h3 {
+  margin: 0 0 var(--spacing-4) 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+}
+
+.notes-textarea {
+  flex: 1;
+  border: none;
+  background: var(--bg-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  resize: none;
+  outline: none;
+  transition: box-shadow var(--transition-fast);
+  line-height: 1.5;
+}
+
+.notes-textarea:focus {
+  box-shadow: 0 0 0 2px var(--accent-light);
+}

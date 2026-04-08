@@ -1,0 +1,4 @@
+/* Reset and overrides handled via Tailwind CDN in index.html */
+body {
+    margin: 0;
+}
