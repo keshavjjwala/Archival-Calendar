@@ -7,7 +7,7 @@ export default function Weekly({ currentDate, notes, handleDateClick }) {
 
   return (
     <div className="flex-1 overflow-x-auto custom-scrollbar min-h-0 h-full">
-      <div className="flex gap-4 p-4 h-full min-w-[1000px]">
+      <div className="flex gap-3 md:gap-4 p-4 h-full min-w-[700px] md:min-w-full">
         {weekDays.map((date) => {
           const dateKey = formatDate(date);
           const note = notes[dateKey];

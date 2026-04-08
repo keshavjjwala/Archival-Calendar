@@ -68,10 +68,7 @@ export function isSameDay(d1, d2) {
   );
 }
 
-export function isWeekend(date) {
-  const day = date.getDay();
-  return day === 0 || day === 6;
-}
+
 
 export function formatDate(date) {
   if (!date) return '';
@@ -85,33 +82,4 @@ export function parseDate(dateStr) {
   if (!dateStr) return null;
   const [y, m, d] = dateStr.split('-');
   return new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
-}
-
-export function getRangeStats(start, end) {
-  if (!start || !end) return { total: 0, weekends: 0, workDays: 0 };
-  
-  const minDate = new Date(Math.min(start.getTime(), end.getTime()));
-  const maxDate = new Date(Math.max(start.getTime(), end.getTime()));
-  
-  let total = 0;
-  let weekends = 0;
-  
-  let current = new Date(minDate);
-  // Setting hours to avoid daylight save time infinite loops
-  current.setHours(0,0,0,0);
-  maxDate.setHours(0,0,0,0);
-  
-  while (current <= maxDate) {
-    total++;
-    if (isWeekend(current)) {
-      weekends++;
-    }
-    current.setDate(current.getDate() + 1);
-  }
-  
-  return {
-    total,
-    weekends,
-    workDays: total - weekends
-  };
 }

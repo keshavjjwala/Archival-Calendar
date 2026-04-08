@@ -43,7 +43,7 @@ export default function Sidebar({ notes, setNotes, selectionRange }) {
   const currentNote = targetDateKey ? notes[targetDateKey] : null;
 
   return (
-    <aside className="w-full flex-1 md:flex-none md:w-80 lg:w-96 bg-surface-container p-6 pt-14 flex flex-col gap-4 min-h-0 h-full overflow-hidden">
+    <aside className="w-full md:w-80 lg:w-96 bg-surface-container p-6 pt-10 md:pt-14 flex flex-col gap-4 flex-shrink-0 md:overflow-hidden h-auto md:h-full">
       <div className="flex-1 overflow-y-auto pr-2 flex flex-col gap-6">
         <div>
           <h3 className="text-xs font-black tracking-widest uppercase text-outline mb-4">Notes & Priorities</h3>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Sidebar from '../Sidebar';
 import Grid from './Grid';
@@ -9,29 +9,29 @@ import { getDaysInMonth, MONTH_NAMES } from '../../utils/date';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 
 export default function Calendar({ viewMode, setViewMode }) {
-  const [currentDate, setCurrentDate] = useState(new Date()); // Default to current month/year 
+  const [currentDate, setCurrentDate] = useState(new Date()); 
   const [[page, direction], setPage] = useState([0, 0]);
   const [notes, setNotes] = useLocalStorage('calendar_notes', {});
   
-  const paginate = (newDirection) => {
+  const paginate = useCallback((newDirection) => {
     setPage([page + newDirection, newDirection]);
     const nextDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + newDirection, 1);
     setCurrentDate(nextDate);
-  };
+  }, [page, currentDate]);
   
-  // Track cleanly to localstorage preventing JSON Date breakage
   const [rawSelection, setRawSelection] = useLocalStorage('calendar_selection', { 
     start: new Date().toISOString(), 
     end: null, 
     hover: null 
   });
-  const selectionRange = {
+
+  const selectionRange = useMemo(() => ({
     start: rawSelection.start ? new Date(rawSelection.start) : null,
     end: rawSelection.end ? new Date(rawSelection.end) : null,
     hover: rawSelection.hover ? new Date(rawSelection.hover) : null,
-  };
+  }), [rawSelection]);
 
-  const setSelectionRange = (updater) => {
+  const setSelectionRange = useCallback((updater) => {
     setRawSelection((prevRaw) => {
       const prev = {
         start: prevRaw.start ? new Date(prevRaw.start) : null,
@@ -45,61 +45,52 @@ export default function Calendar({ viewMode, setViewMode }) {
         hover: next.hover ? next.hover.toISOString() : null,
       };
     });
-  };
+  }, [setRawSelection]);
   
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
-  const days = getDaysInMonth(currentYear, currentMonth);
+  const days = useMemo(() => getDaysInMonth(currentYear, currentMonth), [currentYear, currentMonth]);
 
-  const handleDateClick = (date) => {
+  const handleDateClick = useCallback((date) => {
     setSelectionRange(prev => {
-      // Check if trying to explicitly deselect the currently active single date
       if (prev.start && !prev.end && prev.start.getTime() === date.getTime()) {
         return { start: null, end: null, hover: null };
       }
-      
-      // First click or reset
       if (!prev.start || (prev.start && prev.end)) {
         return { start: date, end: null, hover: null };
       }
-      // Second click sets end
-      if (prev.start && !prev.end) {
-        const minTime = Math.min(prev.start.getTime(), date.getTime());
-        const maxTime = Math.max(prev.start.getTime(), date.getTime());
-        return { start: new Date(minTime), end: new Date(maxTime), hover: null };
-      }
-      return prev;
+      const minTime = Math.min(prev.start.getTime(), date.getTime());
+      const maxTime = Math.max(prev.start.getTime(), date.getTime());
+      return { start: new Date(minTime), end: new Date(maxTime), hover: null };
     });
-  };
+  }, [setSelectionRange]);
 
-  const handleDateHover = (date) => {
+  const handleDateHover = useCallback((date) => {
     setSelectionRange(prev => {
-      // Only set hover state when we are in the middle of a selection
       if (prev.start && !prev.end) {
         if (prev.hover && prev.hover.getTime() === date.getTime()) return prev;
         return { ...prev, hover: date };
       }
       return prev;
     });
-  };
+  }, [setSelectionRange]);
 
-  const handleGridLeave = () => {
+  const handleGridLeave = useCallback(() => {
     setSelectionRange(prev => {
       if (prev.hover) return { ...prev, hover: null };
       return prev;
     });
-  };
+  }, [setSelectionRange]);
 
   return (
-    <div className="relative w-full max-w-6xl h-full max-h-full bg-surface-container-low rounded-2xl paper-shadow flex flex-col md:flex-row" style={{ perspective: '1200px' }}>
-      {/* Animating Unit: Spiral + Left Panel */}
+    <div className="relative w-full max-w-6xl h-auto md:h-full bg-surface-container-low md:rounded-2xl md:paper-shadow flex flex-col md:flex-row" style={{ perspective: '1200px' }}>
       <div className="flex-[2] relative">
         <AnimatePresence mode="popLayout" initial={false} custom={direction}>
           <motion.div
             key={page}
             custom={direction}
-            style={{ willChange: 'transform, opacity' }}
-            className="absolute inset-0 p-4 md:p-6 pt-12 md:pt-14 flex flex-col min-h-0 h-full origin-top backface-hidden"
+            style={{ shadow: "0 0px 0px rgba(0,0,0,0)" }}
+            className="relative md:absolute md:inset-0 p-4 md:p-6 pt-12 md:pt-14 flex flex-col min-h-0 h-full origin-top backface-hidden"
             initial={{ 
               rotateX: direction > 0 ? -75 : 75,
               scale: 0.98,
@@ -123,9 +114,12 @@ export default function Calendar({ viewMode, setViewMode }) {
             }}
           >
             {/* Spiral Binding Overlay - Inside the flipping unit */}
-            <div className="absolute top-0 left-0 right-0 h-10 flex justify-around items-start px-12 z-20 pointer-events-none">
+            <div className="absolute top-0 left-0 right-0 h-10 flex justify-around items-start px-4 md:px-12 z-20 pointer-events-none">
+              {[...Array(6)].map((_, i) => (
+                <div key={`spiral-mob-${i}`} className="md:hidden w-2 h-8 spiral-gradient rounded-full"></div>
+              ))}
               {[...Array(12)].map((_, i) => (
-                <div key={i} className="w-2.5 md:w-3 h-8 md:h-10 spiral-gradient rounded-full"></div>
+                <div key={`spiral-dt-${i}`} className="hidden md:block w-3 h-10 spiral-gradient rounded-full"></div>
               ))}
             </div>
 
@@ -133,7 +127,7 @@ export default function Calendar({ viewMode, setViewMode }) {
             <div className="flex flex-col h-full min-h-0">
               {/* Hero Section */}
               <div className="mb-4 md:mb-6 flex flex-col md:flex-row gap-4 items-end flex-shrink-0">
-                <div className="w-full md:w-1/2 h-20 md:h-28 lg:h-36 rounded-2xl overflow-hidden shadow-sm hidden sm:block">
+                <div className="w-full md:w-1/2 h-24 md:h-28 lg:h-36 rounded-2xl overflow-hidden shadow-sm">
                   <img 
                     alt={`${MONTH_NAMES[currentMonth]} ${currentYear} Aesthetic`} 
                     className="w-full h-full object-cover" 
