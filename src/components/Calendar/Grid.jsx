@@ -12,7 +12,7 @@ const Grid = memo(({ days, selectionRange, notes, onDateClick, onDateHover, onGr
       </div>
       
       {/* Grid Content */}
-      <div className="grid grid-cols-7 gap-y-1 flex-1 auto-rows-[1fr] min-h-0">
+      <div className="grid grid-cols-7 gap-0.5 md:gap-0 flex-1 auto-rows-[1fr] min-h-0">
         {days.map((dayObj, index) => {
           const { date, isCurrentMonth } = dayObj;
           const dateKey = formatDate(date);

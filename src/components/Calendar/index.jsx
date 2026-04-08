@@ -83,7 +83,7 @@ export default function Calendar({ viewMode, setViewMode }) {
   }, [setSelectionRange]);
 
   return (
-    <div className="relative w-full max-w-6xl h-auto md:h-full bg-surface-container-low md:rounded-2xl md:paper-shadow flex flex-col md:flex-row" style={{ perspective: '1200px' }}>
+    <div className="relative w-full max-w-6xl h-auto md:h-full bg-surface-container-low md:rounded-2xl md:paper-shadow flex flex-col md:flex-row shadow-lg sm:shadow-none" style={{ perspective: '1200px' }}>
       <div className="flex-[2] relative">
         <AnimatePresence mode="popLayout" initial={false} custom={direction}>
           <motion.div

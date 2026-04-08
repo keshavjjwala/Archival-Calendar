@@ -6,7 +6,7 @@ export default function App() {
   const [viewMode, setViewMode] = useState('monthly');
 
   return (
-    <div className="flex flex-col min-h-screen md:h-screen md:overflow-hidden bg-surface">
+    <div className="flex flex-col min-h-[100dvh] md:h-screen md:overflow-hidden bg-surface">
       <Header viewMode={viewMode} setViewMode={setViewMode} />
       <main className="flex-1 min-h-0 p-3 md:p-6 flex items-center justify-center">
         <Calendar viewMode={viewMode} setViewMode={setViewMode} />
