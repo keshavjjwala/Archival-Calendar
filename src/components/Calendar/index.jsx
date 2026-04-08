@@ -19,33 +19,11 @@ export default function Calendar({ viewMode, setViewMode }) {
     setCurrentDate(nextDate);
   }, [page, currentDate]);
   
-  const [rawSelection, setRawSelection] = useLocalStorage('calendar_selection', { 
-    start: new Date().toISOString(), 
-    end: null, 
-    hover: null 
+  const [selectionRange, setSelectionRange] = useState({
+    start: new Date(),
+    end: null,
+    hover: null,
   });
-
-  const selectionRange = useMemo(() => ({
-    start: rawSelection.start ? new Date(rawSelection.start) : null,
-    end: rawSelection.end ? new Date(rawSelection.end) : null,
-    hover: rawSelection.hover ? new Date(rawSelection.hover) : null,
-  }), [rawSelection]);
-
-  const setSelectionRange = useCallback((updater) => {
-    setRawSelection((prevRaw) => {
-      const prev = {
-        start: prevRaw.start ? new Date(prevRaw.start) : null,
-        end: prevRaw.end ? new Date(prevRaw.end) : null,
-        hover: prevRaw.hover ? new Date(prevRaw.hover) : null,
-      };
-      const next = typeof updater === 'function' ? updater(prev) : updater;
-      return {
-        start: next.start ? next.start.toISOString() : null,
-        end: next.end ? next.end.toISOString() : null,
-        hover: next.hover ? next.hover.toISOString() : null,
-      };
-    });
-  }, [setRawSelection]);
   
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();

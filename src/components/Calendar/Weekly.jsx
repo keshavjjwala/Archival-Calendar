@@ -46,11 +46,7 @@ export default function Weekly({ currentDate, notes, handleDateClick }) {
                       {note.text}
                     </p>
                   </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center h-full opacity-10 py-8">
-                    <span className="material-symbols-outlined text-3xl">add_circle</span>
-                  </div>
-                )}
+                ) : null}
               </div>
             </div>
           );
